@@ -12,7 +12,6 @@ import myproject.SummerSpringBootProject.enums.Gender;
 @NoArgsConstructor
 public class UserProfileDTO {
     private String email;
-    private String password;
     private String firstname;
     private String lastname;
     private Gender gender;

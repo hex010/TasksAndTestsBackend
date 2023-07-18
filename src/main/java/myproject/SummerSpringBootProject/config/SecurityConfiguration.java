@@ -27,6 +27,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/posts/**").authenticated()
+                        .requestMatchers("/api/v1/user/**").authenticated()
                         .requestMatchers("/api/v1/hiuser").authenticated()
                         .requestMatchers("/api/v1/hiadmin").hasRole("ADMIN")
                         .anyRequest().permitAll()

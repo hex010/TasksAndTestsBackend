@@ -21,6 +21,10 @@ public class JwtService {
     private static final String secret_key = "66c139d77e0957e75fdafa4826ce2ad7409dbd5378cfd190bbc962b40e9f48e5";
     private final Duration jwtLifeTime = Duration.ofMinutes(5);
 
+    public String getTokenFromHeader(String authHeader){
+        return authHeader.substring(7);
+    }
+
     public String extractUsernameFromToken(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
