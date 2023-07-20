@@ -1,9 +1,6 @@
 package myproject.SummerSpringBootProject.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,9 +24,14 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
+
+    @Column(unique=true, length = 70)
     private String email;
+
     private String password;
+    @Column(length = 50)
     private String firstname;
+    @Column(length = 50)
     private String lastname;
     private Gender gender;
     private Role role;

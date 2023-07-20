@@ -1,5 +1,6 @@
 package myproject.SummerSpringBootProject.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import myproject.SummerSpringBootProject.dtos.LoginRequest;
 import myproject.SummerSpringBootProject.dtos.LoginResponse;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<LoginResponse> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
         return ResponseEntity.ok(service.register(registerRequest));
     }
 }
