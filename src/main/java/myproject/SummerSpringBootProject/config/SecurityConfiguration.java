@@ -1,6 +1,7 @@
 package myproject.SummerSpringBootProject.config;
 
 import lombok.RequiredArgsConstructor;
+import myproject.SummerSpringBootProject.exception.FilterChainExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +22,8 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final CorsFilter corsFilter;
     private final AuthenticationProvider authenticationProvider;
+
+    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,7 +39,8 @@ public class SecurityConfiguration {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(corsFilter, ChannelProcessingFilter.class);
+                .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
+                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
 
         return http.build();
     }
