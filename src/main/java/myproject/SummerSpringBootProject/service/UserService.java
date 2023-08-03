@@ -4,18 +4,21 @@ import lombok.RequiredArgsConstructor;
 import myproject.SummerSpringBootProject.dtos.UserProfileDTO;
 import myproject.SummerSpringBootProject.entity.User;
 import myproject.SummerSpringBootProject.repository.UserRepository;
-import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
-    public UserProfileDTO getUserProfile(String authToken) {
-        String userEmail = jwtService.extractUsernameFromToken(jwtService.getTokenFromHeader(authToken));
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+    public UserProfileDTO getUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("Vartotojas nerastas"));
 
         return UserProfileDTO.builder()
                 .firstname(user.getFirstname())
@@ -24,8 +27,10 @@ public class UserService {
                 .gender(user.getGender()).build();
     }
 
-    public void updateUserProfile(String authToken, UserProfileDTO myProfileData) {
-        String userEmail = jwtService.extractUsernameFromToken(jwtService.getTokenFromHeader(authToken));
+    public void updateUserProfile(UserProfileDTO myProfileData) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
         User user = userRepository.findByEmail(userEmail).orElseThrow();
 
         user.setFirstname(myProfileData.getFirstname());

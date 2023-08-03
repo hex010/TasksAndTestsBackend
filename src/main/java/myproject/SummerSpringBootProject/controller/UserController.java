@@ -3,7 +3,6 @@ package myproject.SummerSpringBootProject.controller;
 import lombok.AllArgsConstructor;
 import myproject.SummerSpringBootProject.dtos.UserProfileDTO;
 import myproject.SummerSpringBootProject.service.UserService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +15,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileDTO> getProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken){
-        return ResponseEntity.ok(userService.getUserProfile(authToken));
+    public ResponseEntity<UserProfileDTO> getProfile(){
+        return ResponseEntity.ok(userService.getUserProfile());
     }
     @PutMapping("/profile")
-    public ResponseEntity<String> updateProfile(@RequestBody UserProfileDTO myProfileData, @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
-        userService.updateUserProfile(authToken, myProfileData);
+    public ResponseEntity<String> updateProfile(@RequestBody UserProfileDTO myProfileData) {
+        userService.updateUserProfile(myProfileData);
         return ResponseEntity.ok("Profile updated successfully");
     }
 }

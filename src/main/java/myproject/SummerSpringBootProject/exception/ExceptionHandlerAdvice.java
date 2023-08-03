@@ -1,14 +1,15 @@
 package myproject.SummerSpringBootProject.exception;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.JMException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -36,21 +37,26 @@ public class ExceptionHandlerAdvice {
     }
     */
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ExceptionModel handleUsernameNotFoundException() {
+        return new ExceptionModel(Collections.singletonList("Vartotojas nerastas."));
+    }
+
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ExceptionModel> handleExpiredJwtException() {
         ExceptionModel exceptionModel = new ExceptionModel(Collections.singletonList("Session expired"));
-        return new ResponseEntity<>(exceptionModel, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionModel, HttpStatus.UNAUTHORIZED);
     }
 
-
-    @ExceptionHandler(JMException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ExceptionModel handleJMException() {
-        return new ExceptionModel(Collections.singletonList("Incorrect JWT token."));
+    @ExceptionHandler(SignatureException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    ExceptionModel handleSignatureException() {
+        return new ExceptionModel(Collections.singletonList("JWT token is not valid."));
     }
 
     @ExceptionHandler(MalformedJwtException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ExceptionModel handleMalformedJwtException() {
         return new ExceptionModel(Collections.singletonList("JWT token is not valid."));
     }

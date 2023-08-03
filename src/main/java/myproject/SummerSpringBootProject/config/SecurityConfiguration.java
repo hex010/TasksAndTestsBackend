@@ -34,6 +34,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/user/**").authenticated()
                         .requestMatchers("/api/v1/hiuser").authenticated()
                         .requestMatchers("/api/v1/hiadmin").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/quiz/all").permitAll() //viena is endpointu visi gali pasiekti
+                        .requestMatchers("/api/v1/quiz/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
