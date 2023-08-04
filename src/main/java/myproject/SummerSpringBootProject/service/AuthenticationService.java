@@ -7,10 +7,10 @@ import myproject.SummerSpringBootProject.dtos.RegisterRequest;
 import myproject.SummerSpringBootProject.entity.User;
 import myproject.SummerSpringBootProject.enums.Gender;
 import myproject.SummerSpringBootProject.enums.Role;
+import myproject.SummerSpringBootProject.exception.EmailAddressIsAlreadyTakenException;
 import myproject.SummerSpringBootProject.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public LoginResponse register(RegisterRequest registerRequest) {
+
+        if(userRepository.existsByEmail(registerRequest.getEmail())) throw new EmailAddressIsAlreadyTakenException("Šis el. paštas yra užimtas.");
+
         var user = User.builder()
                 .firstname(registerRequest.getFirstname())
                 .lastname(registerRequest.getLastname())

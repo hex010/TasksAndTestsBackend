@@ -10,5 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ExceptionModel {
+    private String message;
     private List<String> errors;
 }

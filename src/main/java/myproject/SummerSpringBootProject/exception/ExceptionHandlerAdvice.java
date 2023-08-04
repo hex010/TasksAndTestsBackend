@@ -10,10 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -23,7 +20,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ExceptionModel handleAuthenticationException(AuthenticationException ex) {
-        return new ExceptionModel(Collections.singletonList(ex.getMessage()));
+        return new ExceptionModel(ex.getMessage(), List.of());
     }
     /*
     @ExceptionHandler(AuthenticationException.class)
@@ -40,25 +37,27 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ExceptionModel handleUsernameNotFoundException() {
-        return new ExceptionModel(Collections.singletonList("Vartotojas nerastas."));
+        return new ExceptionModel("Vartotojas nerastas", List.of());
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ExceptionModel> handleExpiredJwtException() {
-        ExceptionModel exceptionModel = new ExceptionModel(Collections.singletonList("Session expired"));
+        ExceptionModel exceptionModel = new ExceptionModel("Sesija baigėsi. Prisijunkite dar kartą.", List.of());
         return new ResponseEntity<>(exceptionModel, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(SignatureException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ExceptionModel handleSignatureException() {
-        return new ExceptionModel(Collections.singletonList("JWT token is not valid."));
+        //jwt token is not valid
+        return new ExceptionModel("Įvyko sesijos klaida", List.of());
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ExceptionModel handleMalformedJwtException() {
-        return new ExceptionModel(Collections.singletonList("JWT token is not valid."));
+        //jwt token is not valid
+        return new ExceptionModel("Įvyko sesijos klaida", List.of());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -66,15 +65,6 @@ public class ExceptionHandlerAdvice {
     ExceptionModel handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
         List<String> errors = ex.getBindingResult().getFieldErrors()
                 .stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
-        return new ExceptionModel(errors);
-    }
-
-    @ExceptionHandler(SQLException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ExceptionModel handleSQLException(SQLException ex){
-        if(ex.getErrorCode() == 1062 && Objects.equals(ex.getSQLState(), "23000"))
-            return new ExceptionModel(Collections.singletonList("El. paštas jau užimtas."));
-
-        return new ExceptionModel(Collections.singletonList(ex.getMessage()));
+        return new ExceptionModel("", errors);
     }
 }
